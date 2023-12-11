@@ -24,11 +24,11 @@ group :development, :test do
 end
 
 group :development do
-  gem "web-console"
   gem "rack-mini-profiler"
   gem "rubocop", "~> 1.57"
   gem "solargraph", "~> 0.49.0"
   gem "syntax_tree", "~> 6.2"
+  gem "web-console"
 end
 
 group :test do
