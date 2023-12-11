@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+
+require "rubydns"
+
+INTERFACES = [[:udp, "0.0.0.0", 5300], [:tcp, "0.0.0.0", 5300]].freeze
+IN = Resolv::DNS::Resource::IN
+# use Cloudflare's public family-friendls DNS servers
+UPSTREAM = RubyDNS::Resolver.new([[:udp, "1.1.1.3", 53], [:tcp, "1.0.0.3", 53]])
+
+RubyDNS.run_server(INTERFACES) do
+  # log all the things so we can see what's going on
+  @logger.level = :debug
+  # TIL: this prevents write buffering and forces output immediately
+  $stderr.sync = true
+
+  otherwise do |transaction|
+    logger.debug "-" * 80
+    logger.debug "Asking upstream for #{transaction.name}"
+    logger.debug "-" * 80
+    transaction.passthrough!(UPSTREAM)
+  end
+end
