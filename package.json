@@ -1,0 +1,10 @@
+{
+  "name": "dotty_dns",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Brian Weaver <bdrums@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@hotwired/stimulus": "^3.2.2"
+  }
+}
