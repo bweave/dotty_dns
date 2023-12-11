@@ -13,10 +13,29 @@ RubyDNS.run_server(INTERFACES) do
   # TIL: this prevents write buffering and forces output immediately
   $stderr.sync = true
 
+  @cache = {}
+
+  match(//, IN::A) do |transaction|
+    cached_ip = @cache[transaction.name]
+    if cached_ip
+      logger.debug "-" * 80
+      logger.debug "Cached answer: #{cached_ip}"
+      logger.debug "-" * 80
+      transaction.respond!(cached_ip)
+    else
+      next!
+    end
+  end
+
   otherwise do |transaction|
     logger.debug "-" * 80
     logger.debug "Asking upstream for #{transaction.name}"
     logger.debug "-" * 80
-    transaction.passthrough!(UPSTREAM)
+    transaction.passthrough!(UPSTREAM) do |response|
+      if response.answer.first&.[](2).is_a?(IN::A)
+        ip = response.answer.first[2].address.to_s
+        @cache[transaction.name] = ip
+      end
+    end
   end
 end
