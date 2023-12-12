@@ -18,24 +18,32 @@ RubyDNS.run_server(INTERFACES) do
   match(//, IN::A) do |transaction|
     cached_ip = @cache[transaction.name]
     if cached_ip
-      logger.debug "-" * 80
-      logger.debug "Cached answer: #{cached_ip}"
-      logger.debug "-" * 80
+      debug "Cached answer: #{cached_ip}"
       transaction.respond!(cached_ip)
     else
       next!
     end
   end
 
+  match(/pco.test/, IN::A) do |transaction|
+    @cache[transaction.name] = "127.0.0.1"
+    debug "Wildcard #{transaction.name}: 127.0.0.1"
+    transaction.respond!("127.0.0.1")
+  end
+
   otherwise do |transaction|
-    logger.debug "-" * 80
-    logger.debug "Asking upstream for #{transaction.name}"
-    logger.debug "-" * 80
+    debug "Asking upstream for #{transaction.name}"
     transaction.passthrough!(UPSTREAM) do |response|
       if response.answer.first&.[](2).is_a?(IN::A)
         ip = response.answer.first[2].address.to_s
         @cache[transaction.name] = ip
       end
     end
+  end
+
+  def debug(msg)
+    logger.debug "-" * 80
+    logger.debug msg
+    logger.debug "-" * 80
   end
 end
