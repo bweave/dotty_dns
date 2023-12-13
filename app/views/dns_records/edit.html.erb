@@ -1,0 +1,4 @@
+<%= turbo_frame_tag @dns_record do %>
+  <%= render "form", dns_record: @dns_record %>
+  <%= link_to "Cancel", dns_records_path %>
+<% end %>

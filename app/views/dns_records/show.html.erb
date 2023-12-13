@@ -1,0 +1,9 @@
+<%= turbo_frame_tag @dns_record do %>
+  <%= render @dns_record %>
+
+  <div>
+    <%= link_to "Edit", edit_dns_record_path(@dns_record) %> |
+    <%= link_to "Back to dns records", dns_records_path, data: { turbo: false } %>
+    <%= button_to "Delete", @dns_record, method: :delete, data: { turbo: false } %>
+  </div>
+<% end %>

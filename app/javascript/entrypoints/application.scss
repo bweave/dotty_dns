@@ -363,3 +363,54 @@ template {
   &.alert { color: red }
   &.notice, &.success { color: green }
 }
+
+form.button_to {
+  display: inline;
+  [type="submit"] {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: inherit;
+    padding: 0;
+    text-decoration: underline;
+  }
+}
+
+.data-row {
+  display: grid;
+  grid-template-columns: max-content 50% auto max-content;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+
+  &.header {
+    background-color: none;
+    border-bottom: 1px solid;
+    font-weight: bold;
+  }
+
+  &:nth-of-type(odd):not(.header) {
+    background-color: #efefef;
+  }
+
+  >:not(:last-child) {
+    margin-right: 1rem;
+    overflow-x: hidden;
+  }
+
+  form:not(.button_to) {
+    display: inline-flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+
+    label + input {
+      margin: 0 0.5rem;
+    }
+  }
+
+  form:not(.button_to) + a {
+    display: inline-flex;
+    align-self: center;
+    // justify-self: flex-end;
+  }
+}
