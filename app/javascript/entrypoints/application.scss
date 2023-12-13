@@ -349,3 +349,17 @@ template {
 }
 
 /* ========================================= */
+
+.container {
+  max-width: 1200px;
+  margin: 1rem auto;
+  padding: 1rem;
+}
+
+.flash {
+  margin: 0 0 1rem;
+
+  &.info { color: blue }
+  &.alert { color: red }
+  &.notice, &.success { color: green }
+}

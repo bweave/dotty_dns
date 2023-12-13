@@ -22,6 +22,11 @@
   </head>
 
   <body>
-    <%= yield %>
+    <div class="container">
+      <div id="flash">
+        <%= render "shared/flash" %>
+      </div>
+      <%= yield %>
+    </div>
   </body>
 </html>
