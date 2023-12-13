@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require "rubydns"
+require_relative "../config/environment"
 
 INTERFACES = [[:udp, "0.0.0.0", 5300], [:tcp, "0.0.0.0", 5300]].freeze
 IN = Resolv::DNS::Resource::IN
@@ -13,10 +14,17 @@ RubyDNS.run_server(INTERFACES) do
   # TIL: this prevents write buffering and forces output immediately
   $stderr.sync = true
 
-  @cache = {}
+  @cache = Redis.dns_cache
+
+  DnsRecord
+    .in_batches(of: 10_000)
+    .each do |batch|
+      records = batch.pluck(:domain, :ip_address).to_h
+      @cache.write_multi(records)
+    end
 
   match(//, IN::A) do |transaction|
-    cached_ip = @cache[transaction.name]
+    cached_ip = @cache.fetch(transaction.name)
     if cached_ip
       debug "Cached answer: #{cached_ip}"
       transaction.respond!(cached_ip)
@@ -26,7 +34,7 @@ RubyDNS.run_server(INTERFACES) do
   end
 
   match(/pco.test/, IN::A) do |transaction|
-    @cache[transaction.name] = "127.0.0.1"
+    @cache.write transaction.name, "127.0.0.1"
     debug "Wildcard #{transaction.name}: 127.0.0.1"
     transaction.respond!("127.0.0.1")
   end
@@ -35,8 +43,8 @@ RubyDNS.run_server(INTERFACES) do
     debug "Asking upstream for #{transaction.name}"
     transaction.passthrough!(UPSTREAM) do |response|
       if response.answer.first&.[](2).is_a?(IN::A)
-        ip = response.answer.first[2].address.to_s
-        @cache[transaction.name] = ip
+        ip_address = response.answer.first[2].address.to_s
+        @cache.write transaction.name, ip_address
       end
     end
   end
