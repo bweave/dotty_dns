@@ -17,6 +17,7 @@ RubyDNS.run_server(INTERFACES) do
   @cache = Redis.dns_cache
 
   DnsRecord
+    .where("domain NOT LIKE ?", "*.%")
     .in_batches(of: 10_000)
     .each do |batch|
       records = batch.pluck(:domain, :ip_address).to_h
@@ -26,18 +27,26 @@ RubyDNS.run_server(INTERFACES) do
   match(//, IN::A) do |transaction|
     cached_ip = @cache.fetch(transaction.name)
     if cached_ip
-      debug "Cached answer: #{cached_ip}"
+      debug "Cached answer for #{transaction.name}: #{cached_ip}"
       transaction.respond!(cached_ip)
     else
       next!
     end
   end
 
-  match(/pco.test/, IN::A) do |transaction|
-    @cache.write transaction.name, "127.0.0.1"
-    debug "Wildcard #{transaction.name}: 127.0.0.1"
-    transaction.respond!("127.0.0.1")
-  end
+  DnsRecord
+    .where("domain LIKE ?", "*.%")
+    .find_each
+    .pluck(:domain, :ip_address)
+    .map do |(domain, ip_address)|
+      wildcard_domain_regex = /#{domain.gsub("*.", ".+")}/
+
+      match(wildcard_domain_regex, IN::A) do |transaction|
+        debug "Wildcard answer for #{transaction.name}: #{ip_address}"
+        @cache.write(transaction.name, ip_address)
+        transaction.respond!(ip_address)
+      end
+    end
 
   otherwise do |transaction|
     debug "Asking upstream for #{transaction.name}"
