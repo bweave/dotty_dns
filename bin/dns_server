@@ -51,9 +51,11 @@ RubyDNS.run_server(INTERFACES) do
   otherwise do |transaction|
     debug "Asking upstream for #{transaction.name}"
     transaction.passthrough!(UPSTREAM) do |response|
-      if response.answer.first&.[](2).is_a?(IN::A)
-        ip_address = response.answer.first[2].address.to_s
-        @cache.write transaction.name, ip_address
+      answer = response.answer.first&.[](2)
+      if answer.is_a?(IN::A)
+        ip_address = answer.address.to_s
+        expires_in = answer.ttl
+        @cache.write transaction.name, ip_address, expires_in:
       end
     end
   end
