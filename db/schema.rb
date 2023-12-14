@@ -10,9 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_12_173748) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_14_165859) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "blocklists", force: :cascade do |t|
+    t.string "url", null: false
+    t.string "title"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["url"], name: "index_blocklists_on_url", unique: true
+  end
 
   create_table "dns_records", force: :cascade do |t|
     t.string "domain", null: false

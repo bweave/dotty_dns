@@ -1,0 +1,23 @@
+<h1>Blocklists</h1>
+
+<%= link_to "New blocklist", new_blocklist_path %>
+
+<div id="blocklists">
+  <div class="data-row header">
+    <div>#</div>
+    <div>Title</div>
+    <div>URL</div>
+    <div></div>
+  </div>
+  <% @blocklists.each_with_index do |blocklist, i| %>
+    <%= turbo_frame_tag blocklist, class: "data-row" do %>
+      <div><%= i + 1 %></div>
+      <%= render blocklist %>
+      <div>
+        <%= link_to "View", blocklist_path(blocklist), data: { turbo: false } %>
+        <%= link_to "Edit", edit_blocklist_path(blocklist) %>
+        <%= button_to "Delete", blocklist, method: :delete %>
+      </div>
+    <% end %>
+  <% end %>
+</div>

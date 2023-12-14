@@ -1,0 +1,9 @@
+<%= turbo_frame_tag @blocklist do %>
+  <%= render @blocklist %>
+
+  <div>
+    <%= link_to "Edit", edit_blocklist_path(@blocklist) %> |
+    <%= link_to "Back to blocklists", blocklists_path, data: { turbo: false } %>
+    <%= button_to "Delete", @blocklist, method: :delete, data: { turbo: false } %>
+  </div>
+<% end %>

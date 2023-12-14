@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     put "users" => "devise/registrations#update", :as => "user_registration"
   end
 
+  resources :blocklists
   resources :dns_records
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

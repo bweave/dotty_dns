@@ -1,0 +1,4 @@
+<%= turbo_frame_tag(@blocklist) do %>
+  <%= render "form", blocklist: @blocklist %>
+  <%= link_to "Cancel", blocklists_path %>
+<% end %>
