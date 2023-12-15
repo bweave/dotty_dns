@@ -8,6 +8,9 @@ class DnsRecord < ApplicationRecord
   after_commit :update_dns_cache, on: %i[create update]
   after_commit :remove_from_dns_cache, on: :destroy
 
+  scope :wildcards, -> { where("domain LIKE ?", "*.%") }
+  scope :not_wildcards, -> { where.not(id: wildcards) }
+
   private
 
   def update_dns_cache

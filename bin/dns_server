@@ -17,7 +17,7 @@ RubyDNS.run_server(INTERFACES) do
   @cache = Redis.dns_cache
 
   DnsRecord
-    .where("domain NOT LIKE ?", "*.%")
+    .not_wildcards
     .in_batches(of: 10_000)
     .each do |batch|
       records = batch.pluck(:domain, :ip_address).to_h
@@ -35,7 +35,7 @@ RubyDNS.run_server(INTERFACES) do
   end
 
   DnsRecord
-    .where("domain LIKE ?", "*.%")
+    .wildcards
     .find_each
     .pluck(:domain, :ip_address)
     .map do |(domain, ip_address)|
