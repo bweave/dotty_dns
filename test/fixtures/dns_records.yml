@@ -9,3 +9,8 @@ two:
   domain: moar-ads.com
   ip_address: "0.0.0.0"
   blocklist: two
+
+wildcard:
+  domain: "*.wildcard.com"
+  ip_address: "0.0.0.0"
+  blocklist: one
