@@ -3,7 +3,7 @@ class DnsRecordsController < ApplicationController
 
   # GET /dns_records
   def index
-    @dns_records = DnsRecord.all
+    @pagy, @dns_records = pagy(DnsRecord.all)
   end
 
   # GET /dns_records/1

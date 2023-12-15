@@ -1,3 +1,5 @@
+require "sidekiq/web"
+
 Rails.application.routes.draw do
   devise_for :users, skip: [:registrations], sign_out_via: [:get]
   as :user do
@@ -6,7 +8,14 @@ Rails.application.routes.draw do
     put "users" => "devise/registrations#update", :as => "user_registration"
   end
 
-  resources :blocklists
+  authenticate :user, lambda { |u| u.admin? } do
+    mount Sidekiq::Web => "/sidekiq"
+  end
+
+  resources :blocklists do
+    get "refresh_all", on: :collection
+    get "refresh", on: :member
+  end
   resources :dns_records
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

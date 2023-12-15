@@ -1,6 +1,7 @@
 <h1>Blocklists</h1>
 
 <%= link_to "New blocklist", new_blocklist_path %>
+<%= link_to "Refresh all", refresh_all_blocklists_path %>
 
 <div id="blocklists">
   <div class="data-row header">
@@ -16,6 +17,7 @@
       <div>
         <%= link_to "View", blocklist_path(blocklist), data: { turbo: false } %>
         <%= link_to "Edit", edit_blocklist_path(blocklist) %>
+        <%= link_to "Refresh", refresh_blocklist_path(blocklist) %> |
         <%= button_to "Delete", blocklist, method: :delete %>
       </div>
     <% end %>

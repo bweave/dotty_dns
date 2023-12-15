@@ -10,7 +10,7 @@ class ParseBlocklistTest < ActiveSupport::TestCase
     result = described_class.call(blocklist)
 
     assert result.ok?
-    assert_equal expected, result.dns_entry_data
+    assert_equal expected, result.data
   end
 
   test "it ignores comments" do
@@ -23,7 +23,7 @@ class ParseBlocklistTest < ActiveSupport::TestCase
     result = described_class.call(blocklist)
 
     assert result.ok?
-    assert_equal expected, result.dns_entry_data
+    assert_equal expected, result.data
   end
 
   test "it ignores trailing comments" do
@@ -34,7 +34,7 @@ class ParseBlocklistTest < ActiveSupport::TestCase
     result = described_class.call(blocklist)
 
     assert result.ok?
-    assert_equal expected, result.dns_entry_data
+    assert_equal expected, result.data
   end
 
   test "it defaults ip_address to 0.0.0.0 for lists that only contain domains" do
@@ -46,6 +46,6 @@ class ParseBlocklistTest < ActiveSupport::TestCase
     result = described_class.call(blocklist)
 
     assert result.ok?
-    assert_equal expected, result.dns_entry_data
+    assert_equal expected, result.data
   end
 end

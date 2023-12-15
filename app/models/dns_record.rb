@@ -1,4 +1,6 @@
 class DnsRecord < ApplicationRecord
+  belongs_to :blocklist, inverse_of: :dns_records
+
   validates :domain, presence: true, uniqueness: true
   validates :ip_address, presence: true, ip_address: true
 

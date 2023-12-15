@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_14_165859) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_14_234429) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -27,6 +27,8 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_14_165859) do
     t.string "ip_address", default: "0.0.0.0", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "blocklist_id"
+    t.index ["blocklist_id"], name: "index_dns_records_on_blocklist_id"
     t.index ["domain"], name: "index_dns_records_on_domain", unique: true
   end
 
@@ -43,4 +45,5 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_14_165859) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "dns_records", "blocklists"
 end
