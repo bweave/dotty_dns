@@ -1,5 +1,3 @@
-require "sidekiq/web"
-
 Rails.application.routes.draw do
   devise_for :users, skip: [:registrations], sign_out_via: [:get]
   as :user do
@@ -8,8 +6,8 @@ Rails.application.routes.draw do
     put "users" => "devise/registrations#update", :as => "user_registration"
   end
 
-  authenticate :user, lambda { |u| u.admin? } do
-    mount Sidekiq::Web => "/sidekiq"
+  authenticate :user, ->(user) { user.admin? } do
+    mount GoodJob::Engine => "/jobs"
   end
 
   resources :blocklists do

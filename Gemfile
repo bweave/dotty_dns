@@ -4,6 +4,7 @@ ruby "3.2.2"
 
 gem "bootsnap", require: false
 gem "devise", "~> 4.9"
+gem "good_job", "~> 3.21"
 gem "pagy", "~> 6.2"
 gem "pg", "~> 1.1"
 gem "pry-rails", "~> 0.3.9"
