@@ -1,2 +1,15 @@
-<div><%= blocklist.title %></div>
-<div><%= blocklist.url %></div>
+<%= turbo_frame_tag blocklist do %>
+  <article>
+    <header>
+      <%= blocklist.title %>
+      <%= blocklist.status_for_display %>
+    </header>
+    <div><%= blocklist.url %></div>
+    <footer>
+      <%= link_to "View", blocklist_path(blocklist), data: { turbo: false } %>
+      <%= link_to "Edit", edit_blocklist_path(blocklist) %>
+      <%= link_to "Refresh", refresh_blocklist_path(blocklist) %>
+      <%= button_to "Delete", blocklist, method: :delete %>
+    </footer>
+  </article>
+<% end %>

@@ -1,2 +1,11 @@
-<div><%= dns_record.domain %></div>
-<div><%= dns_record.ip_address %></div>
+<%= turbo_frame_tag dns_record do %>
+  <article>
+    <div>Domain: <%= dns_record.domain %></div>
+    <div>IP Address: <%= dns_record.ip_address %></div>
+    <footer>
+      <%= link_to "View", dns_record_path(dns_record), data: { turbo: false } %>
+      <%= link_to "Edit", edit_dns_record_path(dns_record) %>
+      <%= button_to "Delete", dns_record, method: :delete %>
+    </footer>
+  </article>
+<% end %>

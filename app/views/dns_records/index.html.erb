@@ -1,24 +1,10 @@
 <h1>Dns records</h1>
 
-<%= link_to "New dns record", new_dns_record_path %>
+<%= link_to "New dns record", new_dns_record_path, role: "button", class: "outline" %>
 
 <div id="dns_records">
-  <div class="data-row header">
-    <div>#</div>
-    <div>Domain</div>
-    <div>IP Address</div>
-    <div></div>
-  </div>
-  <% @dns_records.each_with_index do |dns_record, i| %>
-    <%= turbo_frame_tag dns_record, class: "data-row" do %>
-      <div><%= i + 1 %></div>
-      <%= render dns_record %>
-      <div>
-        <%= link_to "View", dns_record_path(dns_record), data: { turbo: false } %>
-        <%= link_to "Edit", edit_dns_record_path(dns_record) %>
-        <%= button_to "Delete", dns_record, method: :delete %>
-      </div>
-    <% end %>
+  <% @dns_records.each do |dns_record| %>
+    <%= render dns_record %>
   <% end %>
 </div>
 
