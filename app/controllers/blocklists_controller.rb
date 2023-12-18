@@ -45,16 +45,18 @@ class BlocklistsController < ApplicationController
 
   def refresh_all
     Blocklist.find_each(&:refresh)
-    # TODO: get Turbo in here
-    # TODO: use the job ids to poll the status of the worker
-    redirect_to blocklists_path, notice: "Refreshing all lists..."
+    respond_to do |format|
+      format.html { redirect_to blocklists_url }
+      format.turbo_stream {}
+    end
   end
 
   def refresh
     @blocklist.refresh
-    # TODO: get Turbo in here
-    # TODO: use the job id to poll the status of the worker
-    redirect_to blocklists_path, notice: "Refreshing list..."
+    respond_to do |format|
+      format.html { redirect_to blocklists_url }
+      format.turbo_stream {}
+    end
   end
 
   # DELETE /blocklists/1
