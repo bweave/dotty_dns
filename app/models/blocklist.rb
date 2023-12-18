@@ -4,6 +4,6 @@ class Blocklist < ApplicationRecord
   validates :url, presence: true, url: true, uniqueness: true
 
   def refresh
-    FetchBlocklistWorker.perform_async(id)
+    FetchBlocklistWorker.perform_later(id)
   end
 end

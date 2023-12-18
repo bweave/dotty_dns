@@ -1,15 +1,14 @@
-class FetchBlocklistWorker
-  include Sidekiq::Worker
-
+class FetchBlocklistWorker < ApplicationJob
   def perform(
     id,
     fetcher = FetchBlocklist,
     parser_worker = ParseBlocklistWorker
   )
-    url = Blocklist.where(id:).pick(:url)
-    result = fetcher.call(url)
+    blocklist = Blocklist.find(id)
+    blocklist.update!(status: :fetching)
+    result = fetcher.call(blocklist.url)
     if result.ok?
-      parser_worker.perform_async(result.data, id)
+      parser_worker.perform_later(result.data, id)
     else
       fail result.error
     end

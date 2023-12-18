@@ -4,6 +4,9 @@
     <% if user_signed_in? %>
       <li><%= link_to "Blocklists", blocklists_path %></li>
       <li><%= link_to "DNS Records", dns_records_path %></li>
+      <% if current_user.admin? %>
+        <li><%= link_to "Jobs", good_job_path, taget: "_blank", rel: "noopener noreferrer", data: { turbo: false } %></li>
+      <% end %>
     <% end %>
   </ul>
   <ul>

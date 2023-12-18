@@ -1,17 +1,18 @@
 class ParseBlocklist
-  def self.call(blocklist)
-    new(blocklist).call
+  def self.call(blocklist, blocklist_id)
+    new(blocklist, blocklist_id).call
   end
 
-  def initialize(blocklist)
+  def initialize(blocklist, blocklist_id)
     @blocklist = blocklist
+    @blocklist_id = blocklist_id
   end
 
   def call
     dns_record_data =
       blocklist
-        .each_line
-        .map do |line|
+        .each_line # .map do |line|
+        .each_with_object({}) do |line, acc|
           line.strip!
           next if line.start_with?("#") || line.blank?
 
@@ -23,9 +24,13 @@ class ParseBlocklist
             ip_address = "0.0.0.0"
           end
 
-          [domain, ip_address]
+          # [domain, ip_address]
+          next if domain.blank? || ip_address.blank?
+          acc[domain] = { domain:, ip_address:, blocklist_id: }
+          acc
         end
-        .compact
+        .values
+    # .compact
 
     Result.new(dns_record_data)
   rescue StandardError => e
@@ -34,5 +39,5 @@ class ParseBlocklist
 
   private
 
-  attr_reader :blocklist
+  attr_reader :blocklist, :blocklist_id
 end
