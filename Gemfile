@@ -5,22 +5,23 @@ ruby "3.2.2"
 gem "bootsnap", require: false
 gem "devise", "~> 4.9"
 gem "good_job", "~> 3.21"
+gem "initials", "~> 0.4.3"
 gem "pagy", "~> 6.2"
 gem "pg", "~> 1.1"
+# Pluck to Struct?
 gem "pry-rails", "~> 0.3.9"
 gem "puma", ">= 5.0"
 gem "rails", "~> 7.1.2"
 gem "redis", ">= 4.0.1"
 gem "rubydns", "~> 2.0"
 gem "sassc-rails", "~> 2.1"
-gem "sidekiq", "~> 7.2"
 gem "stimulus-rails"
 gem "turbo-rails"
 gem "vite_rails", "~> 3.0"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "debug", platforms: %i[ mri windows ]
+  gem "debug", platforms: %i[mri windows]
   gem "minitest-focus"
 end
 
