@@ -3,7 +3,14 @@ class DnsRecordsController < ApplicationController
 
   # GET /dns_records
   def index
-    @pagy, @dns_records = pagy(DnsRecord.all)
+    relation =
+      if params[:search].present?
+        DnsRecord.where("domain LIKE ?", "#{params[:search]}%")
+      else
+        DnsRecord.all
+      end
+
+    @pagy, @dns_records = pagy(relation)
   end
 
   # GET /dns_records/1

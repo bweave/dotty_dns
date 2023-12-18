@@ -2,6 +2,10 @@
 
 <%= link_to "New dns record", new_dns_record_path, role: "button", class: "outline" %>
 
+<%= form_tag(dns_records_path, method: :get) do %>
+  <input type="search" id="search" name="search" placeholder="Search" value="<%= params[:search] %>">
+<% end %>
+
 <div id="dns_records">
   <% @dns_records.each do |dns_record| %>
     <%= render dns_record %>
