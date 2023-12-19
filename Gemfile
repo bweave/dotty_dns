@@ -10,6 +10,7 @@ gem "pagy", "~> 6.2"
 gem "pg", "~> 1.1"
 # Pluck to Struct?
 gem "pry-rails", "~> 0.3.9"
+gem "pry-remote", "~> 0.1.8"
 gem "puma", ">= 5.0"
 gem "rails", "~> 7.1.2"
 gem "redis", ">= 4.0.1"
