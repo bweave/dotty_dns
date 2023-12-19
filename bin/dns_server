@@ -8,7 +8,19 @@ IN = Resolv::DNS::Resource::IN
 # use Cloudflare's public family-friendls DNS servers
 UPSTREAM = RubyDNS::Resolver.new([[:udp, "1.1.1.3", 53], [:tcp, "1.0.0.3", 53]])
 
-RubyDNS.run_server(INTERFACES) do
+# Monkey patch and add @start_time to #process_query so that we can track execution time
+module RubyDNS
+  class RuleBasedServer < Async::DNS::Server
+    def process_query(query, options = {}, &block)
+      @start_time = Time.now
+      super
+    end
+  end
+end
+
+RubyDNS.run_server(INTERFACES) do # rubocop:disable Metrics/BlockLength
+  # Use upstream DNS for name resolution.
+  @logger = Logger.new($stderr)
   # log all the things so we can see what's going on
   @logger.level = :debug
   # TIL: this prevents write buffering and forces output immediately
@@ -25,10 +37,11 @@ RubyDNS.run_server(INTERFACES) do
     end
 
   match(//, IN::A) do |transaction|
-    cached_ip = @cache.fetch(transaction.name)
-    if cached_ip
-      debug "Cached answer for #{transaction.name}: #{cached_ip}"
-      transaction.respond!(cached_ip)
+    ip_address = @cache.fetch(transaction.name)
+    if ip_address
+      debug "Cached answer for #{transaction.name}: #{ip_address}"
+      log_query(transaction:, ip_address:)
+      transaction.respond!(ip_address)
     else
       next!
     end
@@ -43,6 +56,7 @@ RubyDNS.run_server(INTERFACES) do
 
       match(wildcard_domain_regex, IN::A) do |transaction|
         debug "Wildcard answer for #{transaction.name}: #{ip_address}"
+        log_query(transaction:, ip_address:)
         @cache.write(transaction.name, ip_address)
         transaction.respond!(ip_address)
       end
@@ -55,9 +69,22 @@ RubyDNS.run_server(INTERFACES) do
       if answer.is_a?(IN::A)
         ip_address = answer.address.to_s
         expires_in = answer.ttl
-        @cache.write transaction.name, ip_address, expires_in:
+        log_query(transaction:, ip_address:, reply_from: "1.1.1.3")
+        @cache.write(transaction.name, ip_address, expires_in:)
       end
     end
+  end
+
+  def log_query(transaction:, ip_address:, reply_from: "0.0.0.0")
+    CreateDnsQueryWorker.perform_later(
+      domain: transaction.name,
+      requested_by: transaction.options.fetch(:remote_address).ip_address,
+      dns_type: DnsQuery.dns_types[:A],
+      status: DnsQuery.status_for(ip_address),
+      reply_from:,
+      reply_type: DnsQuery.reply_types[:IP],
+      reply_time_ms: Time.now - @start_time
+    )
   end
 
   def debug(msg)
