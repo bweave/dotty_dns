@@ -1,5 +1,7 @@
 # DottyDNS
 
+A Pi-hole inspired, Ruby and Rails powered DNS server and admin UI.
+
 ### Requirements
 
 - Ruby 3+
