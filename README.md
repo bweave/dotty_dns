@@ -15,6 +15,11 @@ Setup the Rails app.
 $ bin/setup
 ```
 
+Seed the database with an admin user, email: `admin@example.com` and password: `password`. Obviously, update these to your own credentials.
+```
+$ bin/rails db:seed
+```
+
 Start the DNS server.
 ```
 $ bin/dns_server
