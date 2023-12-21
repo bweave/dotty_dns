@@ -1,24 +1,34 @@
-# README
+# DottyDNS
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+### Requirements
 
-Things you may want to cover:
+- Ruby 3+
+- Redis
+- Postgres 10+
 
-* Ruby version
+### Usage
 
-* System dependencies
+Setup the Rails app.
+```
+$ bin/setup
+```
 
-* Configuration
+Start the DNS server.
+```
+$ bin/dns_server
+```
 
-* Database creation
+Test out some queries. Adjust the port as needed.
+```
+$ dig @localhost -p 5300 google.com
+```
 
-* Database initialization
+Use the DNS server as your local computer's DNS by pointing your Network DNS setting at `127.0.0.1`.
 
-* How to run the test suite
+Start the Rails admin app.
+```
+$ bin/dev
+```
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Access the Rails app at http://127.0.0.1:3000.
+<img width="930" alt="dottydns-dashboard" src="https://github.com/bweave/dotty_dns/assets/6437945/d367bce5-96b1-463c-8d69-f84687a2b118">
