@@ -3,6 +3,7 @@ source "https://rubygems.org"
 ruby "3.2.2"
 
 gem "bootsnap", require: false
+gem "chartkick", "~> 5.0"
 gem "devise", "~> 4.9"
 gem "good_job", "~> 3.21"
 gem "initials", "~> 0.4.3"

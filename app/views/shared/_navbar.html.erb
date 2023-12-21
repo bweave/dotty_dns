@@ -1,6 +1,6 @@
 <nav>
   <ul>
-    <li><strong>DottyDNS</strong></li>
+    <li><%= link_to dashboard_path do %><strong>DottyDNS</strong><% end %></li>
     <% if user_signed_in? %>
       <li><%= link_to "Blocklists", blocklists_path %></li>
       <li><%= link_to "DNS Records", dns_records_path %></li>

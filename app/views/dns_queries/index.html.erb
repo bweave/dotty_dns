@@ -1,0 +1,100 @@
+<div id="time_frame">
+  <%= form_tag(dns_queries_path, method: :get) do %>
+    <%= label_tag :time_frame %>
+    <%= select_tag(
+      :time_frame,
+      options_for_select(
+        search_time_frame_options.keys,
+        params[:time_frame] || search_time_frame_default
+      ),
+      onchange: "this.form.submit();")
+    %>
+  <% end %>
+</div>
+
+<div class="grid">
+  <article>
+    <header>Total queries</header>
+    <%= @stats[:total_queries] %>
+  </article>
+  <article>
+    <header>Blocked</header>
+    <%= @stats[:total_blocked] %>
+  </article>
+  <article>
+    <header>Percentage blocked</header>
+    <%= number_to_percentage(@stats[:total_blocked] / @stats[:total_queries].to_f * 100, precision: 2) %>
+  </article>
+  <article>
+    <header>Permitted</header>
+    <%= @stats[:total_permitted] %>
+  </article>
+  <article>
+    <header>Domains</header>
+    <%= @stats[:total_domains] %>
+  </article>
+</div>
+
+<div id="total_queries_for_time_frame">
+  <h2>Queries over time frame</h2>
+  <%= column_chart(
+    [
+      {
+        name: "Blocked",
+        stack: "stack1",
+        data: @stats[:queries_over_time][:blocked],
+      },
+      {
+        name: "Permitted",
+        stack: "stack1",
+        data: @stats[:queries_over_time][:permitted],
+      },
+    ],
+    stacked: true
+  ) %>
+</div>
+
+<div class="grid">
+  <div id="top_blocked">
+    <h2>Top blocked domains</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Domain</th>
+          <th>Hits</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @stats[:top_blocked].each do |domain, hits| %>
+          <tr>
+            <td><%= domain %></td>
+            <td><%= hits %></td>
+            <td><%= number_to_percentage(hits / @stats[:total_blocked].to_f * 100, precision: 2) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <div id="top_permitted">
+    <h2>Top permitted domains</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Domain</th>
+          <th>Hits</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @stats[:top_permitted].each do |domain, hits| %>
+          <tr>
+            <td><%= domain %></td>
+            <td><%= hits %></td>
+            <td><%= number_to_percentage(hits / @stats[:total_permitted].to_f * 100, precision: 2) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

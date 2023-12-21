@@ -18,6 +18,8 @@ console.log('Visit the guide for more information: ', 'https://vite-ruby.netlify
 import * as Turbo from "@hotwired/turbo-rails"
 Turbo.start()
 
+import "chartkick/chart.js"
+
 //
 // import ActiveStorage from '@rails/activestorage'
 // ActiveStorage.start()
